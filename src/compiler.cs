@@ -36,7 +36,7 @@ public class Compiler
 		expression = rpnExpression;
 
 		Tokenize();
-		MakeInternalForm();
+		Internalize();
 		string y86asm = EmitCode();
 
 		return y86asm;
@@ -86,7 +86,7 @@ public class Compiler
 	/// Convert the series of tokens into an intermediate form.
 	/// This is the "middle step" before generating assembly.
 	/// </summary>
-	private void MakeInternalForm()
+	private void Internalize()
 	{
 		instructions = new List<Instruction>();
 
