@@ -28,25 +28,25 @@ public class InstructionType
 	/// <summary>
 	/// Will generate code to push a number onto the stack.
 	///</summary>
-	public static readonly InstructionType Push = Make('P');
+	public static readonly InstructionType Push = Make(Instructions.Push);
 
 	/// <summary>
 	/// Will generate code to pop two values from the stack, add
 	/// them together, then push the result onto the stack.
 	/// </summary>
-	public static readonly InstructionType Plus = Make('+');
+	public static readonly InstructionType Plus = Make(Instructions.Plus);
 
 	/// <summary>
 	/// Will generate code to pop two values from the stack, subtract
 	/// them, then push the result onto the stack.
 	/// </summary>
-	public static readonly InstructionType Minus = Make('-');
+	public static readonly InstructionType Minus = Make(Instructions.Minus);
 
 	/// <summary>
 	/// Will generate code to swap the positions of the two values on
 	/// the top of the stack.
 	/// </summary>
-	public static readonly InstructionType Swap = Make('S');
+	public static readonly InstructionType Swap = Make(Instructions.Swap);
 
 	/// <summary>
 	/// Builder to create a new InstructionType.
