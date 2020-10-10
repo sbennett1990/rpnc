@@ -168,10 +168,21 @@ public class Compiler
 init:	irmovl Stack, %esp	# Set up stack pointer
 	irmovl Stack, %ebp	# Set up base pointer
 	jmp Main		# Execute main program
+
+# Data section
+	.align 4
+depth:	.long 0x3		# Keeps track of the RPN stack depth
+
 #
 # Main function
 #
-Main:";
+Main:
+	# The RPN stack is initially empty, so initialize depth to zero
+	irmovl depth, %edi
+	mrmovl (%edi), %edx	# put depth value in %edx
+	xorl %edx, %edx		# zero the register
+	rmmovl %edx, (%edi)	# store 0 in depth
+";
 		return asm;
 	}
 
