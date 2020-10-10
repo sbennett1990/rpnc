@@ -178,10 +178,10 @@ depth:	.long 0x3		# Keeps track of the RPN stack depth
 #
 Main:
 	# The RPN stack is initially empty, so initialize depth to zero
-	irmovl depth, %edi
-	mrmovl (%edi), %edx	# put depth value in %edx
+	irmovl depth, %edi	# %edi holds the address of depth
+	mrmovl (%edi), %edx	# %edx holds the value of depth
 	xorl %edx, %edx		# zero the register
-	rmmovl %edx, (%edi)	# store 0 in depth
+	rmmovl %edx, (%edi)	# depth = 0
 ";
 		return asm;
 	}
