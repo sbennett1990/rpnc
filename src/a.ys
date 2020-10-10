@@ -1,0 +1,79 @@
+#
+# This program was compiled using RPNcompiler, by Scott Bennett
+#
+# Execution begins at address 0
+	.pos 0
+init:	irmovl Stack, %esp	# Set up stack pointer
+	irmovl Stack, %ebp	# Set up base pointer
+	jmp Main		# Execute main program
+
+# Data section
+	.align 4
+depth:	.long 0x3		# Keeps track of the RPN stack depth
+
+#
+# Main function
+#
+Main:
+	# The RPN stack is initially empty, so initialize depth to zero
+	irmovl depth, %edi
+	mrmovl (%edi), %edx	# put depth value in %edx
+	xorl %edx, %edx		# zero the register
+	rmmovl %edx, (%edi)	# store 0 in depth
+
+	# [PUSH]
+
+	# push the number 7 onto the stack
+	irmovl $7, %edx
+	pushl %edx
+
+	# [PUSH]
+
+	# push the number 1 onto the stack
+	irmovl $1, %edx
+	pushl %edx
+
+	# [PLUS]
+	# ensure there are two arguments on the stack
+
+	# pop two values
+	popl %ecx
+	popl %ebx
+
+	# add
+	addl %ecx, %ebx
+
+	# push result onto stack
+	pushl %ebx
+
+	# [PUSH]
+
+	# push the number 3 onto the stack
+	irmovl $3, %edx
+	pushl %edx
+
+	# [MINUS]
+	# ensure there are two arguments on the stack
+
+	# pop two values
+	popl %ecx
+	popl %ebx
+
+	# subtract
+	subl %ecx, %ebx
+
+	# push result onto stack
+	pushl %ebx
+
+# Footer section:
+#
+# Pop the result off the stack and return in %eax
+	popl %eax
+
+	# print result (only the registers)
+	dump $1	# Dump
+	halt
+
+	# Stack starts at the highest memory location
+	.pos 0xffc
+Stack:
