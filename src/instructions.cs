@@ -18,7 +18,7 @@ public static class Instructions
 /// <summary>
 ///
 /// </summary>
-public class InstructionType
+public sealed class InstructionType
 {
 	/// <summary>
 	/// Holds the type of instruction.

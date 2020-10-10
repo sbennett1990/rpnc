@@ -34,7 +34,7 @@ public static class Tokens
 /// <summary>
 /// Represents an RPN token.
 /// </summary>
-public class TokenType : IEquatable<TokenType>
+public sealed class TokenType : IEquatable<TokenType>
 {
 	public string Type { get; private set; }
 
