@@ -201,7 +201,7 @@ Main:
 	popl %eax
 
 	# print result (only the registers)
-	dump $1	# Dump
+	call $7	# dump
 	halt
 
 	# Stack starts at the highest memory location
