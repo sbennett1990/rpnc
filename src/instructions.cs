@@ -18,7 +18,7 @@ public static class Instructions
 /// <summary>
 ///
 /// </summary>
-public sealed class InstructionType
+public sealed class InstructionType : IEquatable<InstructionType>
 {
 	/// <summary>
 	/// Holds the type of instruction.
@@ -47,6 +47,24 @@ public sealed class InstructionType
 	/// the top of the stack.
 	/// </summary>
 	public static readonly InstructionType Swap = Make(Instructions.Swap);
+
+	/// <summary>
+	/// Determines whether this InstructionType is equal to another
+	/// InstructionType.
+	/// </summary>
+	public bool Equals(InstructionType other)
+	{
+		if (other == null) {
+			return false;
+		}
+
+		return Type.Equals(other.Type);
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(Type);
+	}
 
 	/// <summary>
 	/// Builder to create a new InstructionType.
