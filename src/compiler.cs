@@ -91,24 +91,24 @@ public class Compiler
 		instructions = new List<Instruction>();
 
 		foreach (Token tok in tokens) {
-			switch (tok.Type.Type) {
-			case Tokens.NUMBER:
+			switch (tok.Type) {
+			case TokenType t when t.Equals(TokenType.NUMBER):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Push,
 					Value = tok.Literal
 				});
 				break;
-			case Tokens.MINUS:
+			case TokenType t when t.Equals(TokenType.MINUS):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Minus
 				});
 				break;
-			case Tokens.PLUS:
+			case TokenType t when t.Equals(TokenType.PLUS):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Plus
 				});
 				break;
-			case Tokens.SWAP:
+			case TokenType t when t.Equals(TokenType.SWAP):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Swap
 				});
