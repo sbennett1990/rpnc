@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace RPNcompiler
 {
 /// <summary>
-///
+/// Represents an operation that the compiler will generate code for.
 /// </summary>
 public sealed class InstructionType : IEquatable<InstructionType>
 {
