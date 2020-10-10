@@ -173,6 +173,10 @@ init:	irmovl Stack, %esp	# Set up stack pointer
 	.align 4
 depth:	.long 0x3		# Keeps track of the RPN stack depth
 
+EDIV:		.long 0x01	# Divide by 0 errno
+ESTACK:		.long 0x02	# Depth of RPN stack too shallow errno
+ESTACKFULL:	.long 0x04	# Depth of RPN stack too high errno
+
 #
 # Main function
 #
@@ -202,6 +206,40 @@ Main:
 
 	# print result (only the registers)
 	call $7	# dump
+	halt
+
+# Error conditions section:
+
+#
+# Division by 0 was attempted
+#
+divide_by_zero:
+	irmovl EDIV, %edi	# %edi holds address of EDIV errno
+	jmp set_code_and_exit
+
+#
+# Not enough operands on the RPN stack for an operation
+# (For example: '1 +', or '3 2 % -')
+#
+stack_error:
+	irmovl ESTACK, %edi	# %edi holds address of ESTACK errno
+	jmp set_code_and_exit
+
+#
+# RPN stack has too many numbers on it at the end of a program
+# (For example: '3 2 1 +')
+#
+stack_too_full:
+	irmovl ESTACKFULL, %edi	# %edi holds address of ESTACKFULL errno
+	jmp set_code_and_exit
+
+#
+# Store the error code in %esi and terminate
+#
+set_code_and_exit:
+	mrmovl (%edi), %esi	# %esi holds error codes
+	xorl %edi, %edi		# clear %edi
+	call $1	# dump
 	halt
 
 	# Stack starts at the highest memory location
