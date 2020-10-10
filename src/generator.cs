@@ -116,10 +116,15 @@ public class Generator
 
 		string asm = $@"
 	# [PUSH]
-
 	# push the number {i} onto the stack
-	irmovl ${i}, %edx
-	pushl %edx
+	irmovl ${i}, %ecx
+	pushl %ecx
+
+	# increment stack depth because there's a new entry
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	addl %ecx, %edx		# depth++
+	rmmovl %edx, (%edi)	# store value
 ";
 		return asm;
 	}
