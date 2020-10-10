@@ -32,6 +32,10 @@ public class Generator
 		string asm = @"
 	# [MINUS]
 	# ensure there are two arguments on the stack
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $2, %ecx
+	subl %ecx, %edx
+	jne stack_error		# goto stack_error if depth != 2
 
 	# pop two values
 	popl %ecx
@@ -42,6 +46,12 @@ public class Generator
 
 	# push result onto stack
 	pushl %ebx
+
+	# decrement stack depth by one
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $-1, %ecx
+	addl %ecx, %edx		# depth--
+	rmmovl %edx, (%edi)	# store value
 ";
 		return asm;
 	}
