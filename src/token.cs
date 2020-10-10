@@ -36,7 +36,7 @@ public static class Tokens
 /// </summary>
 public class TokenType : IEquatable<TokenType>
 {
-	public string Type { get; set; }
+	public string Type { get; private set; }
 
 	public static readonly TokenType AND = Make(Tokens.AND);
 

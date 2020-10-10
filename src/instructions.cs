@@ -23,7 +23,7 @@ public class InstructionType
 	/// <summary>
 	/// Holds the type of instruction.
 	/// </summary>
-	public char Type { get; set; }
+	public char Type { get; private set; }
 
 	/// <summary>
 	/// Will generate code to push a number onto the stack.
