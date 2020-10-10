@@ -1,6 +1,6 @@
-# RPNcompiler
+# RPNc
 
-RPNcompiler can compile a reversh Polish notation expression into
+RPNc{ompiler} can compile a Reversh Polish Notation expression into
 y86 assembly.
 
 Inspired by [math-compiler](https://github.com/skx/math-compiler) by

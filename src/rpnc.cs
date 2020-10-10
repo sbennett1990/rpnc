@@ -24,7 +24,7 @@ using System.Text;
 namespace RPNcompiler
 {
 /// <summary>
-/// RPNC: A simplistic compiler that takes a reverse Polish notation
+/// RPNc: A simplistic compiler that takes a Reverse Polish Notation
 /// expression and compiles it to y86 assembly.
 /// </summary>
 public static class RPNC
