@@ -5,16 +5,6 @@ using System.Collections.Generic;
 
 namespace RPNcompiler
 {
-
-// A hack of an enum, since C# doesn't allow char type enums.
-public static class Instructions
-{
-	public const char Push = 'P';
-	public const char Plus = '+';
-	public const char Minus = '-';
-	public const char Swap = 'S';
-}
-
 /// <summary>
 ///
 /// </summary>
@@ -74,6 +64,15 @@ public sealed class InstructionType : IEquatable<InstructionType>
 		return new InstructionType {
 			Type = t
 		};
+	}
+
+	// A hack of an enum, since C# doesn't allow char type enums.
+	private static class Instructions
+	{
+		public const char Push = 'P';
+		public const char Plus = '+';
+		public const char Minus = '-';
+		public const char Swap = 'S';
 	}
 }
 

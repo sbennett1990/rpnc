@@ -5,32 +5,6 @@ using System.Collections.Generic;
 
 namespace RPNcompiler
 {
-
-public static class Tokens
-{
-	public const string EOF = "EOF";
-	public const string ERROR = "ERROR";
-	public const string NUMBER = "NUMBER";
-	public const string IDENT = "IDENT";
-
-	/* integer operations */
-	public const string PLUS = "+";
-	public const string MINUS = "-";
-	public const string ASTERISK = "*";
-	public const string SLASH = "/";
-	public const string MOD = "%";
-	public const string POWER = "^";
-	public const string FACTORIAL = "!";
-
-	/* bitwise operations */
-	public const string AND = "and";
-	public const string XOR = "xor";
-
-	/* stack operations */
-	public const string DUP = "dup";
-	public const string SWAP = "swap";
-}
-
 /// <summary>
 /// Represents an RPN token.
 /// </summary>
@@ -78,6 +52,32 @@ public sealed class TokenType : IEquatable<TokenType>
 		return new TokenType {
 			Type = t
 		};
+	}
+
+	// A hack of an enum, since C# doesn't allow string type enums.
+	private static class Tokens
+	{
+		public const string EOF = "EOF";
+		public const string ERROR = "ERROR";
+		public const string NUMBER = "NUMBER";
+		public const string IDENT = "IDENT";
+
+		/* integer operations */
+		public const string PLUS = "+";
+		public const string MINUS = "-";
+		public const string ASTERISK = "*";
+		public const string SLASH = "/";
+		public const string MOD = "%";
+		public const string POWER = "^";
+		public const string FACTORIAL = "!";
+
+		/* bitwise operations */
+		public const string AND = "and";
+		public const string XOR = "xor";
+
+		/* stack operations */
+		public const string DUP = "dup";
+		public const string SWAP = "swap";
 	}
 }
 
