@@ -135,14 +135,14 @@ public class Compiler
 		StringBuilder body = new StringBuilder();
 
 		foreach (Instruction opr in instructions) {
-			switch (opr.Type.Type) {
-			case Instructions.Minus:
+			switch (opr.Type) {
+			case InstructionType it when it.Equals(InstructionType.Minus):
 				body.Append(generator.GenMinus());
 				break;
-			case Instructions.Plus:
+			case InstructionType it when it.Equals(InstructionType.Plus):
 				body.Append(generator.GenPlus());
 				break;
-			case Instructions.Push:
+			case InstructionType it when it.Equals(InstructionType.Push):
 				body.Append(generator.GenPush(opr.Value));
 				break;
 			default:
