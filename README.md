@@ -35,8 +35,8 @@ simulator (**yess**) only supports 32bit integers.
 * Modulo - `%`
 * And - `and` (bitwise)
 * Xor - `xor` (bitwise)
-* Duplication - `dup`
-* Swap - `swap`
+* Duplication - `dup` (*needs testing*)
+* Swap - `swap` (*needs testing*)
 
 ## Errors
 
