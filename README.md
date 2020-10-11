@@ -8,7 +8,7 @@ Steve Kemp.
 
 ## Build
 
-RPNc is written in C# and targets .NET Core 3.1 (with plans to implement
+**RPNc** is written in C# and targets .NET Core 3.1 (with plans to implement
 my mono build system so it can run on mono on OpenBSD).
 
 To build on Windows:
@@ -17,8 +17,8 @@ To build on Windows:
 
 ## Maths
 
-RPNc can compile RPN expressions such as `9 1 +`. Expressions are limited to
-integer operations: there is no floating point support because my toy
+**RPNc** can compile RPN expressions such as `9 1 +`. Expressions are limited
+to integer operations: there is no floating point support because my toy
 simulator (**yess**) only supports 32bit integers.
 
 ### Supported Operations
@@ -39,7 +39,7 @@ simulator (**yess**) only supports 32bit integers.
 
 ## Errors
 
-RPNc attempts to detect and report some common errors at compile-time and
+**RPNc** attempts to detect and report some common errors at compile-time and
 runtime.
 
 ### Compile-Time Errors
