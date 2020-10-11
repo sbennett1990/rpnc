@@ -26,8 +26,19 @@ Main:
 	rmmovl %edx, (%edi)	# depth = 0
 
 	# [PUSH]
-	# push the number 7 onto the stack
-	irmovl $7, %ecx
+	# push the number 3 onto the stack
+	irmovl $3, %ecx
+	pushl %ecx
+
+	# increment stack depth because there's a new entry
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	addl %ecx, %edx		# depth++
+	rmmovl %edx, (%edi)	# store value
+
+	# [PUSH]
+	# push the number 2 onto the stack
+	irmovl $2, %ecx
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
@@ -39,40 +50,6 @@ Main:
 	# [PUSH]
 	# push the number 1 onto the stack
 	irmovl $1, %ecx
-	pushl %ecx
-
-	# increment stack depth because there's a new entry
-	mrmovl (%edi), %edx	# %edx = depth
-	irmovl $1, %ecx
-	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%edi)	# store value
-
-	# [PLUS]
-	# ensure there are two arguments on the stack
-	mrmovl (%edi), %edx	# %edx = depth
-	irmovl $2, %ecx
-	subl %ecx, %edx
-	jl stack_error		# goto stack_error if depth < 2
-
-	# pop two values
-	popl %ecx
-	popl %ebx
-
-	# add
-	addl %ecx, %ebx
-
-	# push result onto stack
-	pushl %ebx
-
-	# decrement stack depth by one
-	mrmovl (%edi), %edx	# %edx = depth
-	irmovl $-1, %ecx
-	addl %ecx, %edx		# depth--
-	rmmovl %edx, (%edi)	# store value
-
-	# [PUSH]
-	# push the number 3 onto the stack
-	irmovl $3, %ecx
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
@@ -105,12 +82,18 @@ Main:
 	rmmovl %edx, (%edi)	# store value
 
 # Footer section:
-#
-# Pop the result off the stack and return in %eax
+
+	# Check that only one number is left on the stack
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	subl %ecx, %edx
+	jne stack_too_full	# goto stack_too_full if depth != 1
+
+	# Pop the result off the stack and return in %eax
 	popl %eax
 
 	# print result (only the registers)
-	call $7	# dump
+	call $5	# dump
 	halt
 
 # Error conditions section:
