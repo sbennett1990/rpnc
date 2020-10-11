@@ -35,7 +35,7 @@ public class Generator
 	mrmovl (%edi), %edx	# %edx = depth
 	irmovl $2, %ecx
 	subl %ecx, %edx
-	jne stack_error		# goto stack_error if depth != 2
+	jl stack_error		# goto stack_error if depth < 2
 
 	# pop two values
 	popl %ecx
@@ -68,7 +68,7 @@ public class Generator
 	mrmovl (%edi), %edx	# %edx = depth
 	irmovl $2, %ecx
 	subl %ecx, %edx
-	jne stack_error		# goto stack_error if depth != 2
+	jl stack_error		# goto stack_error if depth < 2
 
 	# pop two values
 	popl %ecx
