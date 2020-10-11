@@ -186,6 +186,7 @@ Main:
 	mrmovl (%esi), %edx	# %edx holds the value of depth
 	xorl %edx, %edx		# zero the register
 	rmmovl %edx, (%esi)	# depth = 0
+	xorl %edi, %edi		# zero %edi since it holds error codes
 ";
 		return asm;
 	}
