@@ -200,8 +200,14 @@ Main:
 
 		string asm = @"
 # Footer section:
-#
-# Pop the result off the stack and return in %eax
+
+	# Check that only one number is left on the stack
+	mrmovl (%edi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	subl %ecx, %edx
+	jne stack_too_full	# goto stack_too_full if depth != 1
+
+	# Pop the result off the stack and return in %eax
 	popl %eax
 
 	# print result (only the registers)
