@@ -44,6 +44,8 @@ runtime.
 
 ### Compile-Time Errors
 
+There are some...
+
 ### Runtime Errors
 
 Any runtime errors will be reported by setting codes in the `%esi` and
