@@ -246,6 +246,7 @@ set_code_and_exit:
 	mrmovl (%ebx), %esi	# %esi holds error codes
 	xorl %ebx, %ebx		# clear %ebx
 	xorl %edi, %edi		# clear %edi
+	irmovl $-1, %edi	# set %edi to -1 to also indicate error
 	call $1	# dump
 	halt
 
