@@ -220,7 +220,7 @@ Main:
 # Division by 0 was attempted
 #
 divide_by_zero:
-	irmovl EDIV, %edi	# %edi holds address of EDIV errno
+	irmovl EDIV, %ebx	# %ebx holds address of EDIV errno
 	jmp set_code_and_exit
 
 #
@@ -228,7 +228,7 @@ divide_by_zero:
 # (For example: '1 +', or '3 2 % -')
 #
 stack_error:
-	irmovl ESTACK, %edi	# %edi holds address of ESTACK errno
+	irmovl ESTACK, %ebx	# %ebx holds address of ESTACK errno
 	jmp set_code_and_exit
 
 #
@@ -236,14 +236,15 @@ stack_error:
 # (For example: '3 2 1 +')
 #
 stack_too_full:
-	irmovl ESTACKFULL, %edi	# %edi holds address of ESTACKFULL errno
+	irmovl ESTACKFULL, %ebx	# %ebx holds address of ESTACKFULL errno
 	jmp set_code_and_exit
 
 #
 # Store the error code in %esi and terminate
 #
 set_code_and_exit:
-	mrmovl (%edi), %esi	# %esi holds error codes
+	mrmovl (%ebx), %esi	# %esi holds error codes
+	xorl %ebx, %ebx		# clear %ebx
 	xorl %edi, %edi		# clear %edi
 	call $1	# dump
 	halt
