@@ -32,7 +32,7 @@ public class Generator
 		string asm = @"
 	# [MINUS]
 	# ensure there are two arguments on the stack
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $2, %ecx
 	subl %ecx, %edx
 	jl stack_error		# goto stack_error if depth < 2
@@ -48,10 +48,10 @@ public class Generator
 	pushl %ebx
 
 	# decrement stack depth by one
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $-1, %ecx
 	addl %ecx, %edx		# depth--
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 ";
 		return asm;
 	}
@@ -65,7 +65,7 @@ public class Generator
 		string asm = @"
 	# [PLUS]
 	# ensure there are two arguments on the stack
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $2, %ecx
 	subl %ecx, %edx
 	jl stack_error		# goto stack_error if depth < 2
@@ -81,10 +81,10 @@ public class Generator
 	pushl %ebx
 
 	# decrement stack depth by one
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $-1, %ecx
 	addl %ecx, %edx		# depth--
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 ";
 		return asm;
 	}
@@ -121,10 +121,10 @@ public class Generator
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
 	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 ";
 		return asm;
 	}

@@ -182,10 +182,10 @@ ESTACKFULL:	.long 0x04	# Depth of RPN stack too high errno
 #
 Main:
 	# The RPN stack is initially empty, so initialize depth to zero
-	irmovl depth, %edi	# %edi holds the address of depth
-	mrmovl (%edi), %edx	# %edx holds the value of depth
+	irmovl depth, %esi	# %esi holds the address of depth
+	mrmovl (%esi), %edx	# %edx holds the value of depth
 	xorl %edx, %edx		# zero the register
-	rmmovl %edx, (%edi)	# depth = 0
+	rmmovl %edx, (%esi)	# depth = 0
 ";
 		return asm;
 	}
@@ -202,7 +202,7 @@ Main:
 # Footer section:
 
 	# Check that only one number is left on the stack
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
 	subl %ecx, %edx
 	jne stack_too_full	# goto stack_too_full if depth != 1
@@ -240,13 +240,13 @@ stack_too_full:
 	jmp set_code_and_exit
 
 #
-# Store the error code in %esi and terminate
+# Store the error code in %edi and terminate
 #
 set_code_and_exit:
-	mrmovl (%ebx), %esi	# %esi holds error codes
+	mrmovl (%ebx), %edi	# %edi holds error codes
 	xorl %ebx, %ebx		# clear %ebx
-	xorl %edi, %edi		# clear %edi
-	irmovl $-1, %edi	# set %edi to -1 to also indicate error
+	xorl %esi, %esi		# clear %esi
+	irmovl $-1, %esi	# set %esi to -1 to also indicate error
 	call $1	# dump
 	halt
 
