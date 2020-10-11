@@ -205,7 +205,7 @@ Main:
 	popl %eax
 
 	# print result (only the registers)
-	call $7	# dump
+	call $5	# dump
 	halt
 
 # Error conditions section:
