@@ -246,7 +246,6 @@ stack_too_full:
 set_code_and_exit:
 	mrmovl (%ebx), %edi	# %edi holds error codes
 	xorl %ebx, %ebx		# clear %ebx
-	xorl %esi, %esi		# clear %esi
 	irmovl $-1, %esi	# set %esi to -1 to also indicate error
 	call $1	# dump
 	halt
