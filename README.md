@@ -12,6 +12,7 @@ Steve Kemp.
 my mono build system so it can run on mono on OpenBSD).
 
 To build on Windows:
+
     PS C:\rpnc> cd src
     PS C:\rpnc\src> dotnet build
 
