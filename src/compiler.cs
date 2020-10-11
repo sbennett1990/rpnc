@@ -98,6 +98,11 @@ public class Compiler
 					Value = tok.Literal
 				});
 				break;
+			case TokenType t when t.Equals(TokenType.DUP):
+				instructions.Add(new Instruction {
+					Type = InstructionType.Dup
+				});
+				break;
 			case TokenType t when t.Equals(TokenType.MINUS):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Minus
@@ -136,6 +141,9 @@ public class Compiler
 
 		foreach (Instruction opr in instructions) {
 			switch (opr.Type) {
+			case InstructionType it when it.Equals(InstructionType.Dup):
+				body.Append(generator.GenDup());
+				break;
 			case InstructionType it when it.Equals(InstructionType.Minus):
 				body.Append(generator.GenMinus());
 				break;

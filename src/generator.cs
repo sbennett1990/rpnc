@@ -24,6 +24,36 @@ namespace RPNcompiler
 public class Generator
 {
 	/// <summary>
+	/// Generate assembly code to duplicate the top value of the stack.
+	/// Top value is popped off the stack then pushed twice.
+	/// </summary>
+	public string GenDup()
+	{
+		string asm = @"
+	# [DUP]
+	# ensure there is an argument on the stack to duplicate
+	mrmovl (%esi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	subl %ecx, %edx
+	jl stack_error		# goto stack_error if depth < 1
+
+	# pop the top value
+	popl %ebx
+
+	# push the value twice to duplicate it
+	pushl %ebx
+	pushl %ebx
+
+	# increment stack depth because there's a new entry
+	mrmovl (%esi), %edx	# %edx = depth
+	irmovl $1, %ecx
+	addl %ecx, %edx		# depth++
+	rmmovl %edx, (%esi)	# store value
+";
+		return asm;
+	}
+
+	/// <summary>
 	/// Generate assembly code to pop two values off the top of the
 	/// stack, subtract them, and push the result.
 	/// </summary>
