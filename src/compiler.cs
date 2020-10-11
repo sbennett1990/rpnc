@@ -153,6 +153,9 @@ public class Compiler
 			case InstructionType it when it.Equals(InstructionType.Push):
 				body.Append(generator.GenPush(opr.Value));
 				break;
+			case InstructionType it when it.Equals(InstructionType.Swap):
+				body.Append(generator.GenSwap());
+				break;
 			default:
 				throw new Exception($"Instructions -> Assembly: unrecognized instruction type: {opr.Type.Type}");
 			}

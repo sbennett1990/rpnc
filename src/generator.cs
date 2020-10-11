@@ -129,11 +129,6 @@ public class Generator
 		throw new NotImplementedException();
 	}
 
-	public string GenSwap()
-	{
-		throw new NotImplementedException();
-	}
-
 	/// <summary>
 	/// Generate assembly to push a number onto the stack.
 	/// </summary>
@@ -155,6 +150,31 @@ public class Generator
 	irmovl $1, %ecx
 	addl %ecx, %edx		# depth++
 	rmmovl %edx, (%esi)	# store value
+";
+		return asm;
+	}
+
+	/// <summary>
+	/// Generate assembly code to swap the positions of the top two values
+	/// on the stack.
+	/// </summary>
+	public string GenSwap()
+	{
+		string asm = @"
+	# [SWAP]
+	# ensure there are two arguments on the stack
+	mrmovl (%esi), %edx	# %edx = depth
+	irmovl $2, %ecx
+	subl %ecx, %edx
+	jl stack_error		# goto stack_error if depth < 2
+
+	# pop two values and push them in the reverse order
+	popl %ecx
+	popl %ebx
+	pushl %ecx
+	pushl %ebx
+
+	# stack depth is unchanged
 ";
 		return asm;
 	}
