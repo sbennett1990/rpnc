@@ -51,11 +51,11 @@ There are some...
 Any runtime errors will be reported by setting codes in the `%esi` and
 `%edi` registers. First, `%esi` will be set to _-1_ like so:
 
-    `%esi: ffffffff`
+    %esi: ffffffff
 
 Then, `%edi` will be set to one of the following error numbers:
 
-* 0x01: EDIV - divide by zero
-* 0x02: ESTACK - RPN stack does not have enough values for an operation
-* 0x04: ESTACKFULL - RPN stack contains too many values at the end of
+* `0x01`: **EDIV** - divide by zero
+* `0x02`: **ESTACK** - RPN stack does not have enough values for an operation
+* `0x04`: **ESTACKFULL** - RPN stack contains too many values at the end of
   program evaluation
