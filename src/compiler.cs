@@ -226,6 +226,21 @@ Main:
 	call $5	# dump hack
 	halt
 
+# Helper subroutines:
+	# Compute the absolute value of x
+	# int Abs(int x)
+Abs:
+	pushl %ebp		# save %ebp
+	rrmovl %esp, %ebp
+	pushl %ecx		# save %ecx
+	mrmovl 8(%ebp), %eax	# %eax = x
+	irmovl $0, %ecx
+	subl %eax, %ecx		# %ecx = 0 - x
+	cmovg %ecx, %eax	# if (0 - x > 0) then x = x * -1
+	popl %ecx		# restore %ecx
+	popl %ebp		# restore %ebp
+	ret
+
 # Error conditions section:
 
 #
