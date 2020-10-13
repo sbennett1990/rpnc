@@ -108,6 +108,11 @@ public class Compiler
 					Type = InstructionType.Minus
 				});
 				break;
+			case TokenType t when t.Equals(TokenType.ASTERISK):
+				instructions.Add(new Instruction {
+					Type = InstructionType.Multiply
+				});
+				break;
 			case TokenType t when t.Equals(TokenType.PLUS):
 				instructions.Add(new Instruction {
 					Type = InstructionType.Plus
@@ -146,6 +151,9 @@ public class Compiler
 				break;
 			case InstructionType it when it.Equals(InstructionType.Minus):
 				body.Append(generator.GenMinus());
+				break;
+			case InstructionType it when it.Equals(InstructionType.Multiply):
+				body.Append(generator.GenMultiply());
 				break;
 			case InstructionType it when it.Equals(InstructionType.Plus):
 				body.Append(generator.GenPlus());

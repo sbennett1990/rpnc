@@ -33,6 +33,12 @@ public sealed class InstructionType : IEquatable<InstructionType>
 	public static readonly InstructionType Minus = Make(Instructions.Minus);
 
 	/// <summary>
+	/// Will generate code to pop two values from the stack, multiply
+	/// them together, then push the result onto the stack.
+	/// </summary>
+	public static readonly InstructionType Multiply = Make(Instructions.Multiply);
+
+	/// <summary>
 	/// Will generate code to duplicate the topmost value of the stack.
 	/// </summary>
 	public static readonly InstructionType Dup = Make(Instructions.Dup);
@@ -77,6 +83,7 @@ public sealed class InstructionType : IEquatable<InstructionType>
 		public const char Push = 'P';
 		public const char Plus = '+';
 		public const char Minus = '-';
+		public const char Multiply = '*';
 		public const char Dup = 'D';
 		public const char Swap = 'S';
 	}

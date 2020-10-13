@@ -22,6 +22,8 @@ public sealed class TokenType : IEquatable<TokenType>
 
 	public static readonly TokenType MINUS = Make(Tokens.MINUS);
 
+	public static readonly TokenType ASTERISK = Make(Tokens.ASTERISK);
+
 	public static readonly TokenType SWAP = Make(Tokens.SWAP);
 
 	public static readonly TokenType XOR = Make(Tokens.XOR);
