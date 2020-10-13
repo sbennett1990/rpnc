@@ -223,7 +223,7 @@ Main:
 	popl %eax
 
 	# print result (only the registers)
-	call $5	# dump
+	call $5	# dump hack
 	halt
 
 # Error conditions section:
