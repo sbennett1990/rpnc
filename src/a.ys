@@ -10,6 +10,9 @@ init:	irmovl Stack, %esp	# Set up stack pointer
 # Data section
 	.align 4
 depth:	.long 0x3		# Keeps track of the RPN stack depth
+x:	.long 0x0		# left-hand operand (val1)
+y:	.long 0x0		# right-hand operand (val2)
+result_is_neg:	.long 0x0	# bool: result should be negative
 
 EDIV:		.long 0x01	# Divide by 0 errno
 ESTACK:		.long 0x02	# Depth of RPN stack too shallow errno
@@ -20,10 +23,11 @@ ESTACKFULL:	.long 0x04	# Depth of RPN stack too high errno
 #
 Main:
 	# The RPN stack is initially empty, so initialize depth to zero
-	irmovl depth, %edi	# %edi holds the address of depth
-	mrmovl (%edi), %edx	# %edx holds the value of depth
+	irmovl depth, %esi	# %esi holds the address of depth
+	mrmovl (%esi), %edx	# %edx holds the value of depth
 	xorl %edx, %edx		# zero the register
-	rmmovl %edx, (%edi)	# depth = 0
+	rmmovl %edx, (%esi)	# depth = 0
+	xorl %edi, %edi		# zero %edi since it holds error codes
 
 	# [PUSH]
 	# push the number 3 onto the stack
@@ -31,60 +35,98 @@ Main:
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
 	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 
 	# [PUSH]
-	# push the number 2 onto the stack
-	irmovl $2, %ecx
+	# push the number 4 onto the stack
+	irmovl $4, %ecx
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
 	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 
-	# [PUSH]
-	# push the number 1 onto the stack
-	irmovl $1, %ecx
-	pushl %ecx
-
-	# increment stack depth because there's a new entry
-	mrmovl (%edi), %edx	# %edx = depth
-	irmovl $1, %ecx
-	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%edi)	# store value
-
-	# [MINUS]
+	# [MULTIPLY]
 	# ensure there are two arguments on the stack
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $2, %ecx
 	subl %ecx, %edx
 	jl stack_error		# goto stack_error if depth < 2
 
 	# pop two values
-	popl %ecx
-	popl %ebx
+	popl %edx		# %edx = val1
+	irmovl x, %ebx
+	rmmovl %edx, (%ebx)	# x = val1
+	popl %ecx		# %ecx = count = val2
+	irmovl y, %ebx
+	rmmovl %ecx, (%ebx)	# y = val2
 
-	# subtract
-	subl %ecx, %ebx
+	# figure out if either are negative numbers
+	irmovl $1, %eax
+	irmovl $0, %ecx
+	andl %edx, %edx		# test x (val1) first
+	je done_m102		# if (x == 0) goto done; // result will be 0
+	cmovg %ecx, %eax	# else if (x > 0) %eax = 0
+	mrmovl (%ebx), %edx	# %edx = y (val2)
+	irmovl $1, %ebx
+	andl %edx, %edx		# test y (val2)
+	je done_m102		# if (y == 0) goto done; // result will be 0
+	cmovg %ecx, %ebx	# else if (y > 0) %ebx = 0
+	xorl %ebx, %eax		# if (a == 1 ^ b == 1) result is negative
+	irmovl result_is_neg, %ebx
+	rmmovl %eax, (%ebx)	# if result will be negative, result_is_neg = 1
 
+	# multiply
+	irmovl x, %ebx
+	mrmovl (%ebx), %edx
+	pushl %edx
+	call Abs		# Abs(x)
+	rmmovl %eax, (%ebx)	# x = Abs(x)
+	irmovl y, %ebx
+	mrmovl (%ebx), %ecx
+	pushl %ecx
+	call Abs		# Abs(y)
+	rmmovl %eax, (%ebx)	# y = Abs(y)
+	xorl %eax, %eax		# %eax = result = 0
+loop_m100:
+	addl %edx, %eax		# result += x
+	irmovl $-1, %ebx
+	addl %ebx, %ecx		# count--
+	jne loop_m100
+
+	# end of loop; negate result if (result_is_neg == 1)
+	irmovl result_is_neg, %ebx
+	mrmovl (%ebx), %ecx
+	andl %ecx, %ecx
+	je done_m103		# if (!result_is_neg) goto done
+	irmovl $0, %edi		# this should be safe as %edi should normally be 0
+	subl %eax, %edi
+	rrmovl %edi, %eax	# result = result * -1
+	xorl %edi, %edi		# zero %edi
+	jmp done_m103
+done_m102:
+	# we have determined that result will be 0
+	irmovl $0, %eax
+done_m103:
 	# push result onto stack
-	pushl %ebx
+	pushl %eax
+	xorl %eax, %eax		# zero %eax
 
 	# decrement stack depth by one
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $-1, %ecx
 	addl %ecx, %edx		# depth--
-	rmmovl %edx, (%edi)	# store value
+	rmmovl %edx, (%esi)	# store value
 
 # Footer section:
 
 	# Check that only one number is left on the stack
-	mrmovl (%edi), %edx	# %edx = depth
+	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
 	subl %ecx, %edx
 	jne stack_too_full	# goto stack_too_full if depth != 1
@@ -93,8 +135,23 @@ Main:
 	popl %eax
 
 	# print result (only the registers)
-	call $5	# dump
+	call $5	# dump hack
 	halt
+
+# Helper subroutines:
+	# Compute the absolute value of x
+	# int Abs(int x)
+Abs:
+	pushl %ebp		# save %ebp
+	rrmovl %esp, %ebp
+	pushl %ecx		# save %ecx
+	mrmovl 8(%ebp), %eax	# %eax = x
+	irmovl $0, %ecx
+	subl %eax, %ecx		# %ecx = 0 - x
+	cmovg %ecx, %eax	# if (0 - x > 0) then x = x * -1
+	popl %ecx		# restore %ecx
+	popl %ebp		# restore %ebp
+	ret
 
 # Error conditions section:
 
@@ -102,7 +159,7 @@ Main:
 # Division by 0 was attempted
 #
 divide_by_zero:
-	irmovl EDIV, %edi	# %edi holds address of EDIV errno
+	irmovl EDIV, %ebx	# %ebx holds address of EDIV errno
 	jmp set_code_and_exit
 
 #
@@ -110,7 +167,7 @@ divide_by_zero:
 # (For example: '1 +', or '3 2 % -')
 #
 stack_error:
-	irmovl ESTACK, %edi	# %edi holds address of ESTACK errno
+	irmovl ESTACK, %ebx	# %ebx holds address of ESTACK errno
 	jmp set_code_and_exit
 
 #
@@ -118,15 +175,16 @@ stack_error:
 # (For example: '3 2 1 +')
 #
 stack_too_full:
-	irmovl ESTACKFULL, %edi	# %edi holds address of ESTACKFULL errno
+	irmovl ESTACKFULL, %ebx	# %ebx holds address of ESTACKFULL errno
 	jmp set_code_and_exit
 
 #
-# Store the error code in %esi and terminate
+# Store the error code in %edi and terminate
 #
 set_code_and_exit:
-	mrmovl (%edi), %esi	# %esi holds error codes
-	xorl %edi, %edi		# clear %edi
+	mrmovl (%ebx), %edi	# %edi holds error codes
+	xorl %ebx, %ebx		# clear %ebx
+	irmovl $-1, %esi	# set %esi to -1 to also indicate error
 	call $1	# dump
 	halt
 
