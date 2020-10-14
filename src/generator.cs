@@ -101,12 +101,12 @@ public class Generator
 	jl stack_error		# goto stack_error if depth < 2
 
 	# pop two values
+	popl %edx		# %edx = val2
+	irmovl y, %ebx
+	rmmovl %edx, (%ebx)	# y = val2
 	popl %edx		# %edx = val1
 	irmovl x, %ebx
 	rmmovl %edx, (%ebx)	# x = val1
-	popl %ecx		# %ecx = count = val2
-	irmovl y, %ebx
-	rmmovl %ecx, (%ebx)	# y = val2
 
 	# figure out if either are negative numbers
 	irmovl $1, %eax
