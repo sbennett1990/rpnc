@@ -314,9 +314,12 @@ set_code_and_exit:
 	call $1	# dump
 	halt
 
-	# Stack starts here
+	# Program stack starts here
 	.pos 0xefc
 Stack:
+	# Calculator stack starts here
+	.pos 0xffc
+Calc_Stack:
 ";
 		return asm;
 	}
