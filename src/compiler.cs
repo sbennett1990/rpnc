@@ -314,8 +314,8 @@ set_code_and_exit:
 	call $1	# dump
 	halt
 
-	# Stack starts at the highest memory location
-	.pos 0xffc
+	# Stack starts here
+	.pos 0xefc
 Stack:
 ";
 		return asm;
