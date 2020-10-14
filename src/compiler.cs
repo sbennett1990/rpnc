@@ -191,6 +191,10 @@ init:	irmovl Stack, %esp	# Set up stack pointer
 # Data section
 	.align 4
 depth:	.long 0x3		# Keeps track of the RPN stack depth
+csp:	.long 0x0		# calc stack pointer
+cbp:	.long 0x0		# calc base pointer
+psp:	.long 0x0		# program stack pointer
+pbp:	.long 0x0		# program base pointer
 x:	.long 0x0		# left-hand operand (val1)
 y:	.long 0x0		# right-hand operand (val2)
 result_is_neg:	.long 0x0	# bool: result should be negative
