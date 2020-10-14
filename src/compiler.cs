@@ -199,6 +199,10 @@ EDIV:		.long 0x01	# Divide by 0 errno
 ESTACK:		.long 0x02	# Depth of RPN stack too shallow errno
 ESTACKFULL:	.long 0x04	# Depth of RPN stack too high errno
 
+### Math Constants ###
+INT_MIN:	.long 0x80000000
+INT_MAX:	.long 0x7fffffff
+
 #
 # Main function
 #
