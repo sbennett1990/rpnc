@@ -242,7 +242,7 @@ Main:
 	halt
 
 # Helper subroutines:
-	# Compute the absolute value of x
+	# Compute the absolute value of x (*doesn't work on INT_MIN yet*)
 	# int Abs(int x)
 Abs:
 	pushl %ebp		# save %ebp
@@ -253,6 +253,7 @@ Abs:
 	subl %eax, %ecx		# %ecx = 0 - x
 	cmovg %ecx, %eax	# if (0 - x > 0) then x = x * -1
 	popl %ecx		# restore %ecx
+Abs_done:
 	popl %ebp		# restore %ebp
 	ret
 
