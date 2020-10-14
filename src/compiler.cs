@@ -242,7 +242,8 @@ Main:
 	halt
 
 # Helper subroutines:
-	# Compute the absolute value of x (*doesn't work on INT_MIN yet*)
+	# Compute the absolute value of x.
+	# Note that Abs(INT_MIN) is undefined.
 	# int Abs(int x)
 Abs:
 	pushl %ebp		# save %ebp
