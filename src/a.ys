@@ -18,6 +18,10 @@ EDIV:		.long 0x01	# Divide by 0 errno
 ESTACK:		.long 0x02	# Depth of RPN stack too shallow errno
 ESTACKFULL:	.long 0x04	# Depth of RPN stack too high errno
 
+### Math Constants ###
+INT_MIN:	.long 0x80000000
+INT_MAX:	.long 0x7fffffff
+
 #
 # Main function
 #
@@ -30,8 +34,8 @@ Main:
 	xorl %edi, %edi		# zero %edi since it holds error codes
 
 	# [PUSH]
-	# push the number 3 onto the stack
-	irmovl $3, %ecx
+	# push the number 7 onto the stack
+	irmovl $7, %ecx
 	pushl %ecx
 
 	# increment stack depth because there's a new entry
@@ -40,87 +44,24 @@ Main:
 	addl %ecx, %edx		# depth++
 	rmmovl %edx, (%esi)	# store value
 
-	# [PUSH]
-	# push the number 4 onto the stack
-	irmovl $4, %ecx
-	pushl %ecx
-
-	# increment stack depth because there's a new entry
+	# [DUP]
+	# ensure there is an argument on the stack to duplicate
 	mrmovl (%esi), %edx	# %edx = depth
 	irmovl $1, %ecx
-	addl %ecx, %edx		# depth++
-	rmmovl %edx, (%esi)	# store value
-
-	# [MULTIPLY]
-	# ensure there are two arguments on the stack
-	mrmovl (%esi), %edx	# %edx = depth
-	irmovl $2, %ecx
 	subl %ecx, %edx
-	jl stack_error		# goto stack_error if depth < 2
+	jl stack_error		# goto stack_error if depth < 1
 
-	# pop two values
-	popl %edx		# %edx = val1
-	irmovl x, %ebx
-	rmmovl %edx, (%ebx)	# x = val1
-	popl %ecx		# %ecx = count = val2
-	irmovl y, %ebx
-	rmmovl %ecx, (%ebx)	# y = val2
+	# pop the top value
+	popl %ebx
 
-	# figure out if either are negative numbers
-	irmovl $1, %eax
-	irmovl $0, %ecx
-	andl %edx, %edx		# test x (val1) first
-	je done_m102		# if (x == 0) goto done; // result will be 0
-	cmovg %ecx, %eax	# else if (x > 0) %eax = 0
-	mrmovl (%ebx), %edx	# %edx = y (val2)
-	irmovl $1, %ebx
-	andl %edx, %edx		# test y (val2)
-	je done_m102		# if (y == 0) goto done; // result will be 0
-	cmovg %ecx, %ebx	# else if (y > 0) %ebx = 0
-	xorl %ebx, %eax		# if (a == 1 ^ b == 1) result is negative
-	irmovl result_is_neg, %ebx
-	rmmovl %eax, (%ebx)	# if result will be negative, result_is_neg = 1
+	# push the value twice to duplicate it
+	pushl %ebx
+	pushl %ebx
 
-	# multiply
-	irmovl x, %ebx
-	mrmovl (%ebx), %edx
-	pushl %edx
-	call Abs		# Abs(x)
-	rmmovl %eax, (%ebx)	# x = Abs(x)
-	irmovl y, %ebx
-	mrmovl (%ebx), %ecx
-	pushl %ecx
-	call Abs		# Abs(y)
-	rmmovl %eax, (%ebx)	# y = Abs(y)
-	xorl %eax, %eax		# %eax = result = 0
-loop_m100:
-	addl %edx, %eax		# result += x
-	irmovl $-1, %ebx
-	addl %ebx, %ecx		# count--
-	jne loop_m100
-
-	# end of loop; negate result if (result_is_neg == 1)
-	irmovl result_is_neg, %ebx
-	mrmovl (%ebx), %ecx
-	andl %ecx, %ecx
-	je done_m103		# if (!result_is_neg) goto done
-	irmovl $0, %edi		# this should be safe as %edi should normally be 0
-	subl %eax, %edi
-	rrmovl %edi, %eax	# result = result * -1
-	xorl %edi, %edi		# zero %edi
-	jmp done_m103
-done_m102:
-	# we have determined that result will be 0
-	irmovl $0, %eax
-done_m103:
-	# push result onto stack
-	pushl %eax
-	xorl %eax, %eax		# zero %eax
-
-	# decrement stack depth by one
+	# increment stack depth because there's a new entry
 	mrmovl (%esi), %edx	# %edx = depth
-	irmovl $-1, %ecx
-	addl %ecx, %edx		# depth--
+	irmovl $1, %ecx
+	addl %ecx, %edx		# depth++
 	rmmovl %edx, (%esi)	# store value
 
 # Footer section:
@@ -139,7 +80,7 @@ done_m103:
 	halt
 
 # Helper subroutines:
-	# Compute the absolute value of x
+	# Compute the absolute value of x (*doesn't work on INT_MIN yet*)
 	# int Abs(int x)
 Abs:
 	pushl %ebp		# save %ebp
@@ -149,6 +90,29 @@ Abs:
 	irmovl $0, %ecx
 	subl %eax, %ecx		# %ecx = 0 - x
 	cmovg %ecx, %eax	# if (0 - x > 0) then x = x * -1
+	popl %ecx		# restore %ecx
+Abs_done:
+	popl %ebp		# restore %ebp
+	ret
+
+	# Determine if the result of a multiplication or division
+	# operation will be negative.
+	# Returns 1 if result should be negative; 0 if positive
+	# int WillBeNeg(int x, int y)
+WillBeNeg:
+	pushl %ebp		# save %ebp
+	rrmovl %esp, %ebp
+	pushl %ecx		# save %ecx
+	pushl %edx		# save %edx
+	pushl %ebx		# save %ebx
+	irmovl $0, %eax		# assume the result won't be negative
+	mrmovl 8(%ebp), %edx	# %edx = x
+	mrmovl 12(%ebp), %ecx	# %ecx = y
+	irmovl $1, %ebx
+	xorl %edx, %ecx		# if (%ecx < 0) then x and y have opposite signs
+	cmovl %ebx, %eax	# return 1 if result will be negative
+	popl %ebx		# restore %ebx
+	popl %edx		# restore %edx
 	popl %ecx		# restore %ecx
 	popl %ebp		# restore %ebp
 	ret
