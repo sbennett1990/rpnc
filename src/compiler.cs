@@ -257,6 +257,28 @@ Abs_done:
 	popl %ebp		# restore %ebp
 	ret
 
+	# Determine if the result of a multiplication or division
+	# operation will be negative.
+	# Returns 1 if result should be negative; 0 if positive
+	# int WillBeNeg(int x, int y)
+WillBeNeg:
+	pushl %ebp		# save %ebp
+	rrmovl %esp, %ebp
+	pushl %ecx		# save %ecx
+	pushl %edx		# save %edx
+	pushl %ebx		# save %ebx
+	irmovl $0, %eax		# assume the result won't be negative
+	mrmovl 8(%ebp), %edx	# %edx = x
+	mrmovl 12(%ebp), %ecx	# %ecx = y
+	irmovl $1, %ebx
+	xorl %edx, %ecx		# if (%ecx < 0) then x and y have opposite signs
+	cmovl %ebx, %eax	# return 1 if result will be negative
+	popl %ebx		# restore %ebx
+	popl %edx		# restore %edx
+	popl %ecx		# restore %ecx
+	popl %ebp		# restore %ebp
+	ret
+
 # Error conditions section:
 
 #
